@@ -6,7 +6,7 @@
 resource "azurerm_network_security_group" "linux-vm-nsg" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "${lower(var.environment)}-${random_string.linux-vm-name.result}-nsg"
+  name                = "${lower(var.environment)}-nsg"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
 
@@ -37,6 +37,8 @@ resource "azurerm_network_security_group" "linux-vm-nsg" {
   }
   tags = {
     environment = var.environment
+    client = var.client_name
+    application = var.app_name
   }
 }
 
@@ -52,21 +54,23 @@ resource "azurerm_subnet_network_security_group_association" "linux-vm-nsg-assoc
 resource "azurerm_public_ip" "linux-vm-ip" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "${random_string.linux-vm-name.result}-ip"
+  name                = "${var.client_short_name}-${var.app_name}-${var.environment}-ip"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
   allocation_method   = "Static"
   
   tags = { 
     environment = var.environment
-  }
+    client = var.client_name
+    application = var.app_name
+   }
 }
 
 # Create Network Card for linux VM
 resource "azurerm_network_interface" "linux-vm-nic" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "${random_string.linux-vm-name.result}-nic"
+  name                = "${var.client_short_name}-${var.app_name}-${var.environment}-nic"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
   
@@ -79,6 +83,8 @@ resource "azurerm_network_interface" "linux-vm-nic" {
 
   tags = { 
     environment = var.environment
+    client = var.client_name
+    application = var.app_name
   }
 }
 
@@ -88,7 +94,7 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
 
   location              = azurerm_resource_group.network-rg.location
   resource_group_name   = azurerm_resource_group.network-rg.name
-  name                  = "${random_string.linux-vm-name.result}-vm"
+  name                  = "${var.client_short_name}-${var.app_name}-${var.environment}-vm"
   network_interface_ids = [azurerm_network_interface.linux-vm-nic.id]
   size                  = var.linux_vm_size
 
@@ -100,12 +106,12 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
   }
 
   os_disk {
-    name                 = "${random_string.linux-vm-name.result}-disk"
+    name                 = "${var.client_short_name}-${var.app_name}-${var.environment}-disk"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
 
-  computer_name  = "${var.linux_client_name}-${var.linux_vm_environment}-vm"
+  computer_name  = "${var.client_short_name}-${var.app_name}-${var.environment}-vm"
   admin_username = var.linux_admin_username
   admin_password = var.linux_admin_password
   custom_data    = base64encode(data.template_file.linux-vm-cloud-init.rendered)
@@ -114,6 +120,8 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
 
   tags = {
     environment = var.environment
+    application = var.app_name
+    client = var.client_name
   }
 }
 

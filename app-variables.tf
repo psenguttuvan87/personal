@@ -24,5 +24,18 @@ variable "environment" {
 variable "location" {
   type        = string
   description = "Azure region where the resource group will be created"
-  default     = "north europe"
+  default     = "eastus"
+}
+
+# environment
+variable "client_name" {
+  type        = string
+  description = "This variable defines the environment to be built"
+}
+
+
+# environment
+variable "client_short_name" {
+  type        = string
+  description = "This variable defines the environment to be built"
 }

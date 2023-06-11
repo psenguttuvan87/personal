@@ -3,7 +3,9 @@
 ####################
 company     = "Techfinite Systems"
 app_name    = "erpnext"
-environment = "deepam-uat"
+environment = "uat"
+client_name = "deepam_logistics"
+client_short_name = "deepam"
 location    = "southindia"
 
 ##################
@@ -26,5 +28,3 @@ network-subnet-cidr = "10.10.1.0/24"
 linux_vm_size        = "Standard_B2ms"
 linux_admin_username = "azureuser"
 linux_admin_password = "DaToa5MunR"
-linux_client_name    = "deepam"
-linux_environment    = "uat"
