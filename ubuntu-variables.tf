@@ -20,6 +20,12 @@ variable "linux_vm_image_offer_20" {
   default     = "0001-com-ubuntu-server-focal"
 }
 
+variable "linux_vm_image_offer_22" {
+  type = string
+  description = " Virtual machine source image offer "
+  default = "0001-com-ubuntu-server-jammy"
+}
+
 variable "ubuntu_1604_sku" {
   type        = string
   description = "SKU for Ubuntu 16.04 LTS"
@@ -55,3 +61,10 @@ variable "ubuntu_2004_gen2_sku" {
   description = "SKU for Ubuntu 20.04 LTS Gen2"
   default     = "20_04-lts-gen2"
 }
+
+variable "ubuntu_2204_gen2_sku" {
+  type        = string
+  description = "SKU for Ubuntu 22.04 LTS Gen2"
+  default     = "22_04-lts-gen2"
+}
+

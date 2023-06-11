@@ -1,6 +1,13 @@
 #! /bin/bash
-sudo apt-get update -y
-sudo apt-get install apache2 -y
-sudo systemctl start apache2
-sudo systemctl enable apache2
-echo "<h1>Azure Virtual Machine deployed with Terraform</h1>" | sudo tee /var/www/html/index.html
+sudo apt update
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable"
+sudo apt update -y
+sudo apt-get install docker-ce -y
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo groupadd docker
+sudo usermod -aG docker azureuser
+sudo docker pull nginx:latest
+sudo docker run --name mynginx1 -p 80:80 -d nginx

@@ -2,31 +2,11 @@
 ## Azure Linux VM - Main ##
 ###########################
 
-# Generate random password
-resource "random_password" "linux-vm-password" {
-  length           = 16
-  min_upper        = 2
-  min_lower        = 2
-  min_special      = 2
-  number           = true
-  special          = true
-  override_special = "!@#$%&"
-}
-
-# Generate a random vm name
-resource "random_string" "linux-vm-name" {
-  length  = 8
-  upper   = false
-  number  = false
-  lower   = true
-  special = false
-}
-
 # Create Security Group to access linux
 resource "azurerm_network_security_group" "linux-vm-nsg" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "linux-${lower(var.environment)}-${random_string.linux-vm-name.result}-nsg"
+  name                = "${lower(var.environment)}-${random_string.linux-vm-name.result}-nsg"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
 
@@ -72,7 +52,7 @@ resource "azurerm_subnet_network_security_group_association" "linux-vm-nsg-assoc
 resource "azurerm_public_ip" "linux-vm-ip" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "linux-${random_string.linux-vm-name.result}-ip"
+  name                = "${random_string.linux-vm-name.result}-ip"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
   allocation_method   = "Static"
@@ -86,7 +66,7 @@ resource "azurerm_public_ip" "linux-vm-ip" {
 resource "azurerm_network_interface" "linux-vm-nic" {
   depends_on=[azurerm_resource_group.network-rg]
 
-  name                = "linux-${random_string.linux-vm-name.result}-nic"
+  name                = "${random_string.linux-vm-name.result}-nic"
   location            = azurerm_resource_group.network-rg.location
   resource_group_name = azurerm_resource_group.network-rg.name
   
@@ -108,26 +88,26 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
 
   location              = azurerm_resource_group.network-rg.location
   resource_group_name   = azurerm_resource_group.network-rg.name
-  name                  = "linux-${random_string.linux-vm-name.result}-vm"
+  name                  = "${random_string.linux-vm-name.result}-vm"
   network_interface_ids = [azurerm_network_interface.linux-vm-nic.id]
   size                  = var.linux_vm_size
 
   source_image_reference {
-    offer     = var.linux_vm_image_offer
+    offer     = var.linux_vm_image_offer_22
     publisher = var.linux_vm_image_publisher
-    sku       = var.ubuntu_1804_sku
+    sku       = var.ubuntu_2204_gen2_sku
     version   = "latest"
   }
 
   os_disk {
-    name                 = "linux-${random_string.linux-vm-name.result}-disk"
+    name                 = "${random_string.linux-vm-name.result}-disk"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
 
-  computer_name  = "linux-${random_string.linux-vm-name.result}-vm"
+  computer_name  = "${var.linux_client_name}-${var.linux_vm_environment}-vm"
   admin_username = var.linux_admin_username
-  admin_password = random_password.linux-vm-password.result
+  admin_password = var.linux_admin_password
   custom_data    = base64encode(data.template_file.linux-vm-cloud-init.rendered)
 
   disable_password_authentication = false
