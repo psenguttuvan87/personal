@@ -27,7 +27,7 @@ stages:
       steps:
       - task: TerraformInstaller@0
         inputs:
-          terraformVersion: '0.13.2'
+          terraformVersion: '1.4.6'
 
       - script: |
               ls $(System.DefaultWorkingDirectory)
