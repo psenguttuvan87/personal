@@ -127,5 +127,5 @@ resource "azurerm_linux_virtual_machine" "linux-vm" {
 
 # Template for bootstrapping
 data "template_file" "linux-vm-cloud-init" {
-  template = file("azure-user-data.sh")
+  template = file("data/azure-user-data.sh")
 }
