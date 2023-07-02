@@ -35,7 +35,7 @@ stages:
               cd $(System.DefaultWorkingDirectory)/src/code
               echo " run terraform init commond"
               ls $(System.DefaultWorkingDirectory)/src/code
-              terraform init -backend-config="storage_account_name=$(tfBackendStorageAccountName)" -backend-config="container_name=$(tfBackendStorageContainerName)" -backend-config="access_key=$(tfBackendSAAccessKey)" -backend-config="key=$(tfBackendFileName)-dev-01"
+              terraform init -backend-config="backendServiceArm=terraform-deployment-spn" -backend-config="storage_account_name=$(tfBackendStorageAccountName)" -backend-config="container_name=$(tfBackendStorageContainerName)" -backend-config="access_key=$(tfBackendSAAccessKey)" -backend-config="key=$(tfBackendFileName)-dev-01"
                
                echo ##############~~~~~~~~~~~~~~~Terraform Plan~~~~~~~~~~~~~~###############
                terraform plan -var-file=terraform.tfvars -var-file="input/dev.tfvars" -out="out.plan" -var="azure-client-id=$(client_id)" -var="azure-client-secret=$(client_secret)" -var="azure-tenant-id=$(tenant_id)" -var="azure-subscription-id=$(subscription_id)" -var="environment_name=dev" -var="environment_instance=01"
